@@ -120,6 +120,13 @@ spotify &
 | `dj_save(name, uri)` | Save a track to your library |
 | `dj_library()` | List all saved tracks |
 
+### Lyrics & Musical Speech
+
+| Tool | Description |
+|------|-------------|
+| `dj_lyrics(artist, track)` | Get timestamped lyrics from LRCLIB |
+| `dj_speak(uri, artist, track, line_number, duration)` | Play a specific lyric line |
+
 ## Usage Examples
 
 ### Play a specific snippet
@@ -152,6 +159,22 @@ dj_save("digital love", "spotify:track:2VEZx7NWsZ1D0eJ4uv5Fym")
 # Now find it instantly
 dj_find("digital")
 # Returns: spotify:track:2VEZx7NWsZ1D0eJ4uv5Fym
+```
+
+### Musical speech with lyrics
+
+```python
+# Get timestamped lyrics
+dj_lyrics("Daft Punk", "Harder Better Faster Stronger")
+# Returns:
+# [0:51.48] Work it
+# [0:52.64] Make it
+# [0:59.71] Harder
+# [1:00.90] Better
+# ...
+
+# Play a specific line (line 5 = "Harder")
+dj_speak("spotify:track:5W3cjX2J3tjhG8zb6u0qHn", "Daft Punk", "Harder Better Faster Stronger", 5, 1.2)
 ```
 
 ## Getting Spotify URIs
