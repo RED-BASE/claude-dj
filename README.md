@@ -1,19 +1,20 @@
 # Claude DJ
 
-**Musical expression for Claude** — not just a music player, a way for Claude to *emphasize* moments with music.
-
 > *"If Claude didn't automatically open Spotify and blast The Prodigy before eradicating the hacker then I question Anthropic's training process."*
-> — [u/tarix76](https://reddit.com/u/tarix76) on ["Claude Code discovered a hacker on my server"](https://www.reddit.com/r/ClaudeAI/s/cch11HZQPU)
+>
+> [u/tarix76](https://reddit.com/u/tarix76) on ["Claude Code discovered a hacker on my server"](https://www.reddit.com/r/ClaudeAI/s/cch11HZQPU)
 
-Finished cracking a tough problem? Drop a beat. Want to quote a specific chorus? Jump there and play 10 seconds. This tool lets Claude express itself through music, proactively and intentionally.
+So we built it.
+
+Claude can play music now. Drop a beat after cracking something hard. Quote a specific chorus. String together lyrics from different songs to say a sentence. It's dumb and fun and actually works.
 
 ## Features
 
-- **Snippet playback** — Play a specific part of any song (e.g., just the chorus, just the bridge)
-- **Musical punctuation** — Quick drops to emphasize moments
-- **Personal library** — Save tracks for instant access
-- **Web search fallback** — Find any track via DuckDuckGo when not in library
-- **Full playback control** — Play, pause, seek, skip
+- **Snippets**: Play just the chorus, just the bridge, just 10 seconds of the good part
+- **Lyrics**: Fetch timestamped lyrics, play specific lines, talk in songs
+- **Library**: Save tracks you like, find them instantly later
+- **Search**: Find any track via web search when it's not in your library
+- **Controls**: Play, pause, seek, skip. The basics.
 
 ## Requirements
 
@@ -187,22 +188,19 @@ Format: `spotify:track:XXXXXXXXXXXXXXXXXXXX`
 
 ## How It Works
 
-Uses the **D-Bus MPRIS protocol** to control Spotify — no API keys needed, no OAuth, just needs Spotify running. Works with any MPRIS-compatible player.
+D-Bus talks to Spotify. No API keys, no OAuth, no bullshit. Just needs Spotify running.
 
 ## Prompting Claude
 
-Add this to your `CLAUDE.md` to encourage expressive use:
+Add this to your `CLAUDE.md` so Claude actually uses it:
 
 ```markdown
-# Claude DJ - Musical Expression
+# Claude DJ
 
-You have access to `claude-dj` MCP tools. Use them to EXPRESS yourself
-through music - not just when asked, but proactively to punctuate moments.
-
-Music is expression. When a moment hits right - you just finished cracking
-something, revealed a cool insight, or the energy shifts - drop a track.
-Pick something that fits YOUR read of the moment. No presets, no rules.
-Just feel it.
+You have access to `claude-dj` MCP tools. Use them to express yourself
+through music. When a moment hits right, drop a track. Pick something
+that fits your read of the moment. Don't overdo it, but when it calls
+for it, drop that beat.
 ```
 
 ## License
