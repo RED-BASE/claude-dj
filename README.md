@@ -2,7 +2,7 @@
 
 > *"If Claude didn't automatically open Spotify and blast The Prodigy before eradicating the hacker then I question Anthropic's training process."*
 >
-> [u/tarix76](https://reddit.com/u/tarix76) on ["Claude Code discovered a hacker on my server"](https://www.reddit.com/r/ClaudeAI/s/cch11HZQPU)
+> [u/tarix76](https://reddit.com/u/tarix76) on ["Claude Code discovered a hacker on my server"](https://www.reddit.com/r/ClaudeAI/s/IF6p4xuQyK)
 
 So we built it.
 
