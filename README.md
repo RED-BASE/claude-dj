@@ -163,18 +163,17 @@ dj_find("digital")
 
 ### Musical speech with lyrics
 
-```python
-# Get timestamped lyrics
-dj_lyrics("Daft Punk", "Harder Better Faster Stronger")
-# Returns:
-# [0:51.48] Work it
-# [0:52.64] Make it
-# [0:59.71] Harder
-# [1:00.90] Better
-# ...
+String together lines from different songs to say something:
 
-# Play a specific line (line 5 = "Harder")
-dj_speak("spotify:track:5W3cjX2J3tjhG8zb6u0qHn", "Daft Punk", "Harder Better Faster Stronger", 5, 1.2)
+```python
+# "Hello... World!"
+dj_speak(uri_adele, "Adele", "Hello", 1, 1.5)         # "Hello"
+dj_speak(uri_armstrong, "Louis Armstrong", "What A Wonderful World", 4, 2)  # "World"
+
+# Get lyrics to find the right lines
+dj_lyrics("M83", "Outro")
+# [1:41.11] I was the king of my own land
+# [2:17.03] Now and forever, I'm your king!
 ```
 
 ## Getting Spotify URIs
