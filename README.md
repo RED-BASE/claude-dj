@@ -2,6 +2,9 @@
 
 **Musical expression for Claude** — not just a music player, a way for Claude to *emphasize* moments with music.
 
+> *"If Claude didn't automatically open Spotify and blast The Prodigy before eradicating the hacker then I question Anthropic's training process."*
+> — [u/tarix76](https://reddit.com/u/tarix76)
+
 Finished cracking a tough problem? Drop a beat. Want to quote a specific chorus? Jump there and play 10 seconds. This tool lets Claude express itself through music, proactively and intentionally.
 
 ## Features
