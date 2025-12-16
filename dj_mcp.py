@@ -424,6 +424,109 @@ def dj_library() -> str:
     return f"Your library ({len(tracks)} tracks):\n" + "\n".join(lines)
 
 
+def parse_lrc_time(lrc_time: str) -> float:
+    """Convert LRC timestamp [mm:ss.xx] to seconds."""
+    # Remove brackets
+    lrc_time = lrc_time.strip("[]")
+    parts = lrc_time.split(":")
+    minutes = int(parts[0])
+    seconds = float(parts[1])
+    return minutes * 60 + seconds
+
+
+def fetch_lyrics(artist: str, track: str) -> list:
+    """Fetch synced lyrics from LRCLIB (free, no auth)."""
+    try:
+        query = urllib.parse.urlencode({
+            "artist_name": artist,
+            "track_name": track
+        })
+        url = f"https://lrclib.net/api/get?{query}"
+
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'claude-dj/1.0'
+        })
+
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode('utf-8'))
+
+        synced = data.get("syncedLyrics", "")
+        if not synced:
+            return []
+
+        lines = []
+        for line in synced.split("\n"):
+            line = line.strip()
+            if not line:
+                continue
+            # Parse [mm:ss.xx] lyrics text
+            match = re.match(r'\[(\d+:\d+\.\d+)\]\s*(.*)', line)
+            if match:
+                timestamp = parse_lrc_time(match.group(1))
+                text = match.group(2).strip()
+                if text:  # Only include lines with actual lyrics
+                    lines.append({"time": timestamp, "text": text})
+
+        return lines
+    except Exception as e:
+        return []
+
+
+@mcp.tool()
+def dj_lyrics(artist: str, track: str) -> str:
+    """
+    Get synced lyrics for a track (timestamps + text).
+
+    Uses LRCLIB - free, no auth needed.
+
+    Args:
+        artist: Artist name (e.g., "M83")
+        track: Track name (e.g., "Outro")
+
+    Returns timestamped lyrics you can use with dj_speak.
+    """
+    lines = fetch_lyrics(artist, track)
+    if not lines:
+        return f"No synced lyrics found for {artist} - {track}"
+
+    result = []
+    for line in lines:
+        mins = int(line["time"] // 60)
+        secs = line["time"] % 60
+        result.append(f"[{mins}:{secs:05.2f}] {line['text']}")
+
+    return "\n".join(result)
+
+
+@mcp.tool()
+def dj_speak(uri: str, artist: str, track: str, line_number: int, duration: float = 3.0) -> str:
+    """
+    Play a specific lyric line from a song - for musical speech!
+
+    Args:
+        uri: Spotify URI for the track
+        artist: Artist name (for lyrics lookup)
+        track: Track name (for lyrics lookup)
+        line_number: Which line to play (1-indexed, use dj_lyrics to see lines)
+        duration: How long to play (default 3 seconds)
+
+    Example: Play line 1 of M83 Outro
+        dj_speak("spotify:track:xxx", "M83", "Outro", 1, 4.0)
+    """
+    lines = fetch_lyrics(artist, track)
+    if not lines:
+        return f"No lyrics found for {artist} - {track}"
+
+    if line_number < 1 or line_number > len(lines):
+        return f"Line {line_number} doesn't exist. Track has {len(lines)} lines."
+
+    line = lines[line_number - 1]
+    start_time = line["time"]
+
+    # Play the snippet
+    return dj_snippet(uri, start_time, duration)
+
+
 @mcp.tool()
 def dj_search(query: str) -> str:
     """
