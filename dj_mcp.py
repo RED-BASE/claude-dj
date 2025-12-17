@@ -23,6 +23,7 @@ mcp = FastMCP("claude-dj")
 
 # Track library path
 TRACKS_FILE = Path(__file__).parent / "tracks.json"
+WORDS_FILE = Path(__file__).parent / "words.json"
 
 SPOTIFY_DEST = "org.mpris.MediaPlayer2.spotify"
 MPRIS_PATH = "/org/mpris/MediaPlayer2"
@@ -358,6 +359,16 @@ def load_tracks() -> dict:
     return {}
 
 
+def load_words() -> dict:
+    """Load word index from JSON file."""
+    if WORDS_FILE.exists():
+        try:
+            return json.loads(WORDS_FILE.read_text())
+        except:
+            return {}
+    return {}
+
+
 def save_tracks(tracks: dict):
     """Save tracks to JSON file."""
     TRACKS_FILE.write_text(json.dumps(tracks, indent=2))
@@ -563,6 +574,74 @@ def dj_search(query: str) -> str:
 
     except Exception as e:
         return f"Search failed: {e}"
+
+
+# ============ MUSICAL SPEECH ============
+
+@mcp.tool()
+def dj_say(word: str, variant: int = 0) -> str:
+    """
+    Say a word through music! Looks up the word in the indexed song lyrics
+    and plays that moment from the song.
+
+    The word index was auto-built from ~50 iconic songs. Some entries are
+    better than others - pick variants to find the best one.
+
+    Args:
+        word: The word to say (e.g., "love", "hello", "champion")
+        variant: Which entry to use if multiple exist (0 = first, 1 = second, etc.)
+
+    Example:
+        dj_say("love")  # Plays "Love, love, love" from The Beatles
+        dj_say("hello", 1)  # Uses 2nd entry for "hello"
+    """
+    words = load_words()
+    word_lower = word.lower().strip()
+
+    if word_lower not in words:
+        # Try fuzzy match
+        matches = [w for w in words.keys() if word_lower in w]
+        if matches:
+            suggestions = ", ".join(matches[:5])
+            return f"'{word}' not found. Similar: {suggestions}"
+        return f"'{word}' not found in word index. Try common words like: love, hello, world, you, me, want, need, feel, believe"
+
+    entries = words[word_lower]
+    if variant >= len(entries):
+        return f"'{word}' only has {len(entries)} variants (0-{len(entries)-1})"
+
+    entry = entries[variant]
+
+    # Play the snippet
+    result = dj_snippet(entry["uri"], entry["time"], entry.get("duration", 1.5))
+
+    return f"Saying '{word}' via {entry['artist']} - {entry['track']}: \"{entry['line']}\" ({len(entries)} variants available)"
+
+
+@mcp.tool()
+def dj_word_info(word: str) -> str:
+    """
+    Show all available entries for a word. Use this to find the best
+    variant before calling dj_say.
+
+    Args:
+        word: The word to look up
+    """
+    words = load_words()
+    word_lower = word.lower().strip()
+
+    if word_lower not in words:
+        return f"'{word}' not found in word index"
+
+    entries = words[word_lower]
+    lines = [f"'{word}' has {len(entries)} variants:"]
+    for i, entry in enumerate(entries[:10]):  # Show first 10
+        lines.append(f"  [{i}] {entry['artist']} - {entry['track']}: \"{entry['line'][:50]}...\" @ {entry['time']:.1f}s")
+
+    if len(entries) > 10:
+        lines.append(f"  ... and {len(entries) - 10} more")
+
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":

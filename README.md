@@ -130,6 +130,21 @@ spotify &
 |------|-------------|
 | `dj_lyrics(artist, track)` | Get timestamped lyrics from LRCLIB |
 | `dj_speak(uri, artist, track, line_number, duration)` | Play a specific lyric line |
+| `dj_say(word, variant?)` | Say a word through music (uses pre-built index) |
+| `dj_word_info(word)` | Show all song variants for a word |
+
+### Word Index
+
+The repo includes a pre-built index of **8,367 words** from **531 iconic songs** spanning hip-hop, country, latin, disco, indie, EDM, and more. Claude can literally speak through music:
+
+```python
+dj_say("hello")     # "Hello, it's me" - Adele
+dj_say("fire", 1)   # "You are my fire" - Backstreet Boys
+dj_say("dreams", 9) # "Sweet dreams are made of this" - Eurythmics
+dj_say("tonight")   # "Tonight I'm gonna have myself a real good time" - Queen
+```
+
+Use `dj_word_info("love")` to see all 175+ variants and pick the best one.
 
 ## Usage Examples
 
@@ -189,6 +204,25 @@ Format: `spotify:track:XXXXXXXXXXXXXXXXXXXX`
 ## How It Works
 
 D-Bus talks to Spotify. No API keys, no OAuth, no bullshit. Just needs Spotify running.
+
+## Rebuilding the Word Index
+
+Want to add more songs? Edit `build_words_v2.py` and add songs to the `SONGS` list:
+
+```python
+SONGS = [
+    ("Artist Name", "Track Name"),
+    # ... add more
+]
+```
+
+Then rebuild:
+
+```bash
+python3 build_words_v2.py
+```
+
+The script auto-searches Spotify URIs and fetches lyrics from LRCLIB. Cached URIs are saved in `uri_cache.json` so rebuilds are fast.
 
 ## Prompting Claude
 

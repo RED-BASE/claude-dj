@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 tracks.json
+build.log
+oxford3000.txt
+billboard_songs.py
+fetch_billboard.py
+build_words.py
